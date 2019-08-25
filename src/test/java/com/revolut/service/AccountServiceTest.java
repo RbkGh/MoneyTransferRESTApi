@@ -37,7 +37,6 @@ public class AccountServiceTest {
         Mockito.when(accountRepository.saveAccount(accountEntity)).thenReturn(accountEntity);
         EndpointOperationResponsePayload endpointOperationResponsePayload = accountService.createAccount(accountEntity);
 
-
         assertEquals(endpointOperationResponsePayload.getStatusCode(), 201);
     }
 
@@ -47,7 +46,6 @@ public class AccountServiceTest {
 
         Mockito.when(accountRepository.saveAccount(accountEntity)).thenReturn(accountEntity);
         EndpointOperationResponsePayload endpointOperationResponsePayload = accountService.createAccount(accountEntity);
-
 
         assertTrue(endpointOperationResponsePayload.getStatusCode() == 400);
     }
@@ -59,7 +57,6 @@ public class AccountServiceTest {
         accountEntity.setName("");
         Mockito.when(accountRepository.saveAccount(accountEntity)).thenReturn(accountEntity);
         EndpointOperationResponsePayload endpointOperationResponsePayload = accountService.createAccount(accountEntity);
-
 
         assertEquals(endpointOperationResponsePayload.getStatusCode(), 400);
     }
@@ -73,7 +70,12 @@ public class AccountServiceTest {
         Mockito.when(accountRepository.saveAccount(accountEntity)).thenReturn(accountEntity);
         EndpointOperationResponsePayload endpointOperationResponsePayload = accountService.createAccount(accountEntity);
 
+        assertEquals(endpointOperationResponsePayload.getStatusCode(), 400);
+    }
 
+    @Test(expected = NullPointerException.class)
+    public void create_account_when_account_data_is_null_expect_null_pointer_exception() {
+        EndpointOperationResponsePayload endpointOperationResponsePayload = accountService.createAccount(null);
         assertEquals(endpointOperationResponsePayload.getStatusCode(), 400);
     }
 }

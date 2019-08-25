@@ -18,7 +18,7 @@ public class EndpointOperationResponsePayload {
      * any extra reason to be passed to client,
      * eg. reason why entity did not save in backend.
      */
-    private String reason;
+    private String reason=null;
 
     public EndpointOperationResponsePayload(int statusCode, Object data) {
         this.statusCode = statusCode;
@@ -46,6 +46,15 @@ public class EndpointOperationResponsePayload {
 
     public EndpointOperationResponsePayload setData(Object data) {
         this.data = data;
+        return this;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public EndpointOperationResponsePayload setReason(String reason) {
+        this.reason = reason;
         return this;
     }
 }
