@@ -10,7 +10,6 @@
 ./gradlew startApp (App will be running on http://localhost:8080)
 ```
 ### Run All Tests
-1.<br>
 ```$xslt
 ./gradlew test
 ```

@@ -4,7 +4,7 @@ package com.revolut.util;
  * author: acerbk
  * Date: 2019-08-24
  * Time: 23:03
- * Base JsonParser to convert string to and from string.
+ * Base JsonParser to convert POJO to json string and json string to POJO.
  * This is used so that in the future we could slot in different implementations
  * of the parser.Eg we can slot in Jackson framework for Gson by making a new implementation.
  */
@@ -21,7 +21,7 @@ public interface JsonParser {
     <T> T toJsonPOJO(String jsonString, Class<T> classType);
 
     /**
-     * convert from POJO to json
+     * convert from POJO to json string
      * @param data POJO to convert to json String
      * @return json string
      */

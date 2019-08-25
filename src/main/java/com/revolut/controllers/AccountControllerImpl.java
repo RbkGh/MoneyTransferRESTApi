@@ -4,6 +4,8 @@ import com.revolut.domain.AccountEntity;
 import com.revolut.model.EndpointOperationResponsePayload;
 import com.revolut.service.AccountService;
 
+import javax.inject.Inject;
+
 /**
  * author: acerbk
  * Date: 2019-08-24
@@ -13,7 +15,8 @@ public class AccountControllerImpl implements AccountController {
 
     private AccountService accountService;
 
-    public AccountControllerImpl(AccountService accountService) {
+    @Inject
+    AccountControllerImpl(AccountService accountService) {
         this.accountService = accountService;
     }
 

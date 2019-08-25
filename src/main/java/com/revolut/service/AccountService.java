@@ -5,6 +5,7 @@ import com.revolut.model.EndpointOperationResponsePayload;
 import com.revolut.repository.AccountRepository;
 import com.revolut.util.EmailValidator;
 
+import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -18,7 +19,8 @@ public class AccountService {
 
     private final AccountRepository accountRepository;
 
-    public AccountService(AccountRepository accountRepository) {
+    @Inject
+    AccountService(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
     }
 

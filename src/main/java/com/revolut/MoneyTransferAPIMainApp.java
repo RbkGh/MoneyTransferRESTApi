@@ -1,12 +1,12 @@
 package com.revolut;
 
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.revolut.controllers.AccountController;
-import com.revolut.controllers.AccountControllerImpl;
 import com.revolut.domain.AccountEntity;
 import com.revolut.model.EndpointOperationResponsePayload;
-import com.revolut.repository.AccountReposityDefaultImpl;
-import com.revolut.service.AccountService;
+import com.revolut.module.AppModule;
 import com.revolut.util.JsonParser;
 import com.revolut.util.JsonParserImpl;
 
@@ -21,15 +21,16 @@ public class MoneyTransferAPIMainApp {
 
 
     public static void main(String[] args) {
+        Injector injector = Guice.createInjector(new AppModule());
 
         port(8080);
         System.out.println("running on port 8080");
 
         post("/account", "application/json", (request, response) -> {
 
-            AccountController accountController = new AccountControllerImpl(new AccountService(new AccountReposityDefaultImpl()));
+            AccountController accountController = injector.getInstance(AccountController.class);
 
-            JsonParser jsonParser = new JsonParserImpl();
+            JsonParser jsonParser = injector.getInstance(JsonParserImpl.class);
 
             AccountEntity accountEntity = jsonParser.toJsonPOJO(request.body(), AccountEntity.class);
             EndpointOperationResponsePayload endpointOperationResponsePayload = accountController.createAccount(accountEntity);
@@ -37,15 +38,12 @@ public class MoneyTransferAPIMainApp {
             response.type("application/json");
             response.status(endpointOperationResponsePayload.getStatusCode());
 
+            String messageResponseBodyWhenDataIsNull = endpointOperationResponsePayload.getReason();
+            String messageResponseBodyWhenDataIsPresent = jsonParser.toJSONString(endpointOperationResponsePayload.getData());
 
-            System.out.println(endpointOperationResponsePayload.getReason());
-
-
-            if (endpointOperationResponsePayload.getData() == null) {
-                return endpointOperationResponsePayload.getReason();
-            } else {
-                return jsonParser.toJSONString(endpointOperationResponsePayload.getData());
-            }
+            return (endpointOperationResponsePayload.getData() == null)
+                    ? messageResponseBodyWhenDataIsNull
+                    : messageResponseBodyWhenDataIsPresent;
         });
 
     }

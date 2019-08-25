@@ -39,6 +39,7 @@ dependencies {
     implementation 'com.sparkjava:spark-core:2.9.0'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'org.slf4j:slf4j-simple:1.7.21'
+    implementation 'com.google.inject:guice:4.1.0'
     testCompile 'io.rest-assured:rest-assured:3.0.2'
     testCompile 'org.mockito:mockito-core:3.0.0'
     testCompile 'junit:junit:4.12'

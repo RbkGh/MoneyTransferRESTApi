@@ -1,7 +1,10 @@
 package com.revolut.service;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.revolut.domain.AccountEntity;
 import com.revolut.model.EndpointOperationResponsePayload;
+import com.revolut.module.AppModule;
 import com.revolut.repository.AccountRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +29,7 @@ public class AccountServiceTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         accountService = new AccountService(accountRepository);
+
     }
 
     @Test

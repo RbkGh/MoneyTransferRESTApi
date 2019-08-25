@@ -15,22 +15,22 @@ import static io.restassured.RestAssured.given;
 public class AccountControllerTest {
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MoneyTransferAPIMainApp.startApp();
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         MoneyTransferAPIMainApp.stopApp();
     }
 
     @Test
-    public void create_account_expect_400_status() {
+    public void create_account_through_http_endpoint_expect_400_status() {
 
         given().
                 when().
                 body("{name:rodney}").
-                post("http://localhost:8080/account").
+                post("/account").
                 then().
                 assertThat().statusCode(400);
 
