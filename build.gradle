@@ -10,6 +10,30 @@ sourceCompatibility = 1.8
 repositories {
     mavenCentral()
 }
+tasks.withType(Test) {
+    testLogging {
+        events "passed", "failed"
+    }
+}
+
+task generateFatJar(type: Jar) {
+
+    manifest {
+        attributes 'Implementation-Title': 'moneyTransferApi',
+                'Implementation-Version': version,
+                'Main-Class': 'com.revolut.MoneyTransferAPIMainApp'
+    }
+
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+task startApp(type: JavaExec){
+    main = "com.revolut.MoneyTransferAPIMainApp"
+    description = "Start Spark server"
+    classpath = sourceSets.main.runtimeClasspath
+}
 
 dependencies {
     implementation 'com.sparkjava:spark-core:2.9.0'
