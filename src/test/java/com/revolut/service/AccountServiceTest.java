@@ -1,10 +1,7 @@
 package com.revolut.service;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import com.revolut.domain.AccountEntity;
 import com.revolut.model.EndpointOperationResponsePayload;
-import com.revolut.module.AppModule;
 import com.revolut.repository.AccountRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +26,6 @@ public class AccountServiceTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         accountService = new AccountService(accountRepository);
-
     }
 
     @Test
@@ -59,6 +55,7 @@ public class AccountServiceTest {
         AccountEntity accountEntity = new AccountEntity();
         accountEntity.setEmailAddress("");
         accountEntity.setName("");
+
         Mockito.when(accountRepository.saveAccount(accountEntity)).thenReturn(accountEntity);
         EndpointOperationResponsePayload endpointOperationResponsePayload = accountService.createAccount(accountEntity);
 
@@ -78,7 +75,7 @@ public class AccountServiceTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void create_account_when_account_data_is_null_expect_null_pointer_exception() {
+    public void create_account_when_account_data_is_null_expect_null_pointer_exception_thrown() {
         EndpointOperationResponsePayload endpointOperationResponsePayload = accountService.createAccount(null);
         assertEquals(endpointOperationResponsePayload.getStatusCode(), 400);
     }

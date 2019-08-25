@@ -1,5 +1,9 @@
 package com.revolut.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.math.BigDecimal;
 
 /**
@@ -7,14 +11,20 @@ import java.math.BigDecimal;
  * Date: 2019-08-24
  * Time: 20:22
  */
+@Entity
 public class AccountEntity {
 
+    @Id
+    @GeneratedValue
     private long id;
 
+    @Column(name="name")
     private String name;
 
+    @Column(name="emailAddress")
     private String emailAddress;
 
+    @Column(name="accountBalance")
     private BigDecimal accountBalance;
 
     public AccountEntity() {

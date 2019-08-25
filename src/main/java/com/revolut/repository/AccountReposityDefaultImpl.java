@@ -1,6 +1,11 @@
 package com.revolut.repository;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.revolut.domain.AccountEntity;
+import com.revolut.module.AppModule;
+
+import javax.persistence.EntityManager;
 
 /**
  * author: acerbk
@@ -9,8 +14,15 @@ import com.revolut.domain.AccountEntity;
  */
 public class AccountReposityDefaultImpl implements AccountRepository {
 
+    Injector injector = Guice.createInjector(new AppModule());
+
     @Override
     public AccountEntity saveAccount(AccountEntity accountEntity) {
+        EntityManager entityManager = injector.getInstance(EntityManager.class);
+
+        entityManager.getTransaction().begin();
+        entityManager.persist(accountEntity);
+        entityManager.getTransaction().commit();
         return null;
     }
 
