@@ -22,8 +22,10 @@ public class MoneyTransferAPIMainApp {
         setupPortNumber();
         AccountController accountController = injector.getInstance(AccountController.class);
 
-        post("/account", accountController::createAccount);
-        get("/account", accountController::getAllAccounts);
+        post("/accounts", accountController::createAccount);
+        get("/accounts", accountController::getAllAccounts);
+        get("/accounts/:id", accountController::getAcountById);
+
         System.out.println("running on port " + port());
     }
 

@@ -38,4 +38,10 @@ public class AccountControllerImpl implements AccountController {
 
         return responseCreator.respondToHttpEndpoint(response, accountService.getAllAccounts());
     }
+
+    @Override
+    public String getAcountById(Request request, Response response) {
+        System.out.println("id ==" + request.params("id"));
+        return responseCreator.respondToHttpEndpoint(response, accountService.getAccountById(request.params("id")));
+    }
 }

@@ -5,8 +5,6 @@ import com.revolut.domain.AccountEntity;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.util.ArrayList;
-import java.util.Currency;
 import java.util.List;
 
 /**
@@ -34,7 +32,15 @@ public class AccountReposityDefaultImpl implements AccountRepository {
 
     @Override
     public AccountEntity getAccountById(Long id) {
-        return null;
+        AccountEntity accountEntity = null;
+        try {
+            Query query = entityManager.createQuery("from " + AccountEntity.class.getName() + " acc where acc.id = ?1");
+            query.setParameter(1, id);
+            accountEntity = (AccountEntity) query.getSingleResult();
+        } catch (Exception ex) {
+            return accountEntity;
+        }
+        return accountEntity;
     }
 
     @Override

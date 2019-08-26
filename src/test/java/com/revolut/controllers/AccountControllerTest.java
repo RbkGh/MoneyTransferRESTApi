@@ -6,8 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static io.restassured.RestAssured.get;
-import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.*;
 import static org.junit.Assert.assertEquals;
 
 
@@ -17,6 +16,8 @@ import static org.junit.Assert.assertEquals;
  * Time: 01:16
  */
 public class AccountControllerTest {
+
+    public static final String ACCOUNTS_ENDPOINT = "/accounts";
 
     @Before
     public void setUp() {
@@ -34,7 +35,7 @@ public class AccountControllerTest {
         given().
                 when().
                 body("{name:rodney}").
-                post("/account").
+                post(ACCOUNTS_ENDPOINT).
                 then().
                 assertThat().statusCode(400);
 
@@ -43,7 +44,7 @@ public class AccountControllerTest {
     @Test
     public void get_all_accounts_through_http_endpoint_expect_empty() {
 
-        Response res = get("/account");
+        Response res = get(ACCOUNTS_ENDPOINT);
         String body = res.asString();
         assertEquals(body, "[]");
 
@@ -55,10 +56,18 @@ public class AccountControllerTest {
         given().
                 when().
                 body("{name:rodney,emailAddress:rodney@gmail.com}").
-                post("/account").
+                post(ACCOUNTS_ENDPOINT).
                 then().
                 assertThat().statusCode(201);
 
+    }
+
+    @Test
+    public void get_account_by_id_through_http_endpoint_expect_404_status() {
+        String id = "1";
+        Response res = post(ACCOUNTS_ENDPOINT + "/" + id);
+
+        assertEquals(res.statusCode(), 404);
     }
 
 }

@@ -14,4 +14,6 @@ public interface AccountController {
 
     String getAllAccounts(Request request, Response response);
 
+    String getAcountById(Request request, Response response);
+
 }

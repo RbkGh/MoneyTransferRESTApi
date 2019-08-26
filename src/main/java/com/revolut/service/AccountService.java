@@ -47,6 +47,13 @@ public class AccountService {
         return new SuccessfulOperationWithJSONBodyResponsePayload(200, this.jsonParser.toJSONString(accountEntities));
     }
 
+    public EndpointOperationResponsePayload getAccountById(String id) {
+        AccountEntity accountEntity = this.accountRepository.getAccountById(Long.valueOf(id));
+        if (Objects.nonNull(accountEntity))
+            return new SuccessfulOperationWithJSONBodyResponsePayload(200, this.jsonParser.toJSONString(accountEntity));
+        return new ErrorOperationWithReasonPayload(404, "Account with id=" + id + " not found.");
+    }
+
     /**
      * validate account properties,
      * at each point,map returned will contain either a {@link Boolean#TRUE} or {@link Boolean#FALSE} only as key.
