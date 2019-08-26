@@ -54,6 +54,12 @@ public class AccountService {
         return new ErrorOperationWithReasonPayload(404, "Account with id=" + id + " not found.");
     }
 
+    public EndpointOperationResponsePayload deleteAccountById(String id) {
+        if (Objects.nonNull(accountRepository.getAccountById(Long.valueOf(id))))
+            return new SuccessfulOperationWithEmptyBodyPayload(200);
+        return new ErrorOperationWithReasonPayload(404, "Account with id =" + id + " not found.");
+    }
+
     /**
      * validate account properties,
      * at each point,map returned will contain either a {@link Boolean#TRUE} or {@link Boolean#FALSE} only as key.

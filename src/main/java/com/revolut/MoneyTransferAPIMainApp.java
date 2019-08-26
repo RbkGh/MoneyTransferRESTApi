@@ -25,6 +25,7 @@ public class MoneyTransferAPIMainApp {
         post("/accounts", accountController::createAccount);
         get("/accounts", accountController::getAllAccounts);
         get("/accounts/:id", accountController::getAcountById);
+        delete("/accounts/:id", accountController::deleteAccountById);
 
         System.out.println("running on port " + port());
     }

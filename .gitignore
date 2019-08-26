@@ -19,7 +19,7 @@
 *.iml
 *.ipr
 /out/
-/.idea
+/.idea/**
 
 ### NetBeans ###
 /nbproject/private/

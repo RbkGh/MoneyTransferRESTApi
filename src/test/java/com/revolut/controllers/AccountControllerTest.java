@@ -70,4 +70,12 @@ public class AccountControllerTest {
         assertEquals(res.statusCode(), 404);
     }
 
+    @Test
+    public void delete_account_by_id_through_http_endpoint_expect_404_status() {
+        String id = "1";
+        Response res = delete(ACCOUNTS_ENDPOINT + "/" + id);
+
+        assertEquals(res.statusCode(), 404);
+    }
+
 }

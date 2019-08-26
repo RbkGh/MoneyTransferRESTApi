@@ -16,4 +16,6 @@ public interface AccountController {
 
     String getAcountById(Request request, Response response);
 
+    String deleteAccountById(Request request, Response response);
+
 }

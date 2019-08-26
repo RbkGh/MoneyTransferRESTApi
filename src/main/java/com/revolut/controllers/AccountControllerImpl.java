@@ -44,4 +44,11 @@ public class AccountControllerImpl implements AccountController {
         System.out.println("id ==" + request.params("id"));
         return responseCreator.respondToHttpEndpoint(response, accountService.getAccountById(request.params("id")));
     }
+
+    @Override
+    public String deleteAccountById(Request request, Response response) {
+        return responseCreator.respondToHttpEndpoint(response, accountService.deleteAccountById(request.params("id")));
+    }
+
+
 }
