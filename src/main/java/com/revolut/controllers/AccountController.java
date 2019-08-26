@@ -1,10 +1,7 @@
 package com.revolut.controllers;
 
-import com.revolut.domain.AccountEntity;
-import com.revolut.model.EndpointOperationResponsePayload;
-import spark.Route;
-
-import static spark.Spark.get;
+import spark.Request;
+import spark.Response;
 
 /**
  * author: acerbk
@@ -13,6 +10,8 @@ import static spark.Spark.get;
  */
 public interface AccountController {
 
-    EndpointOperationResponsePayload createAccount(AccountEntity accountEntity);
+    String createAccount(Request request, Response response);
+
+    String getAllAccounts(Request request, Response response);
 
 }

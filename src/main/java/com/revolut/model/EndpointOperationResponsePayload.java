@@ -6,29 +6,35 @@ package com.revolut.model;
  * Time: 20:04
  * Use this as base class for all endpoint responses by <br>
  * setting response status code into {@link EndpointOperationResponsePayload#statusCode} field <br>
- * and the appropriate data into {@link EndpointOperationResponsePayload#data} field
+ * and the appropriate endpointResponseBody into {@link EndpointOperationResponsePayload#endpointResponseBody} field
  */
 public class EndpointOperationResponsePayload {
 
+    /**
+     * response status code to return to client
+     */
     private int statusCode;
 
-    private Object data;
+    /**
+     * json formatted string to be sent as response body
+     */
+    private String endpointResponseBody;
 
     /**
-     * any extra reason to be passed to client,
-     * eg. reason why entity did not save in backend.
+     * any extra errorReason to be passed to client,
+     * eg. errorReason why entity did not save in backend.
      */
-    private String reason=null;
+    private String errorReason;
 
-    public EndpointOperationResponsePayload(int statusCode, Object data) {
+    public EndpointOperationResponsePayload(int statusCode, String endpointResponseBody) {
         this.statusCode = statusCode;
-        this.data = data;
+        this.endpointResponseBody = endpointResponseBody;
     }
 
-    public EndpointOperationResponsePayload(int statusCode, Object data, String reason) {
+    public EndpointOperationResponsePayload(int statusCode, String endpointResponseBody, String errorReason) {
         this.statusCode = statusCode;
-        this.data = data;
-        this.reason = reason;
+        this.endpointResponseBody = endpointResponseBody;
+        this.errorReason = errorReason;
     }
 
     public int getStatusCode() {
@@ -40,21 +46,21 @@ public class EndpointOperationResponsePayload {
         return this;
     }
 
-    public Object getData() {
-        return data;
+    public String getEndpointResponseBody() {
+        return endpointResponseBody;
     }
 
-    public EndpointOperationResponsePayload setData(Object data) {
-        this.data = data;
+    public EndpointOperationResponsePayload setEndpointResponseBody(String endpointResponseBody) {
+        this.endpointResponseBody = endpointResponseBody;
         return this;
     }
 
-    public String getReason() {
-        return reason;
+    public String getErrorReason() {
+        return errorReason;
     }
 
-    public EndpointOperationResponsePayload setReason(String reason) {
-        this.reason = reason;
+    public EndpointOperationResponsePayload setErrorReason(String errorReason) {
+        this.errorReason = errorReason;
         return this;
     }
 }

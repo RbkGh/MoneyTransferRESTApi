@@ -2,13 +2,17 @@ package com.revolut.module;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+
 import javax.inject.Singleton;
+
 import com.revolut.controllers.AccountController;
 import com.revolut.controllers.AccountControllerImpl;
 import com.revolut.repository.AccountRepository;
 import com.revolut.repository.AccountReposityDefaultImpl;
 import com.revolut.util.JsonParser;
 import com.revolut.util.JsonParserImpl;
+import com.revolut.util.ResponseCreator;
+import com.revolut.util.ResponseCreatorImpl;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -30,6 +34,7 @@ public class AppModule extends AbstractModule {
         bind(AccountController.class).to(AccountControllerImpl.class);
         bind(AccountRepository.class).to(AccountReposityDefaultImpl.class);
         bind(JsonParser.class).to(JsonParserImpl.class);
+        bind(ResponseCreator.class).to(ResponseCreatorImpl.class);
     }
 
     @Provides

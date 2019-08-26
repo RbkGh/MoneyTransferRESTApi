@@ -9,7 +9,7 @@
 ```$xslt
 ./gradlew startApp (App will be running on http://localhost:8080)
 ```
-### Run All Tests
+### Run All Tests[Make sure nothing is running on port 8080]
 ```$xslt
 ./gradlew test
 ```

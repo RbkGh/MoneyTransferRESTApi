@@ -1,9 +1,6 @@
 package com.revolut.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 /**
@@ -11,20 +8,21 @@ import java.math.BigDecimal;
  * Date: 2019-08-24
  * Time: 20:22
  */
-@Entity
+@Entity(name = "account ")
+@Table(name = "account ")
 public class AccountEntity {
 
     @Id
     @GeneratedValue
     private long id;
 
-    @Column(name="name")
+    @Column(name = "name")
     private String name;
 
-    @Column(name="emailAddress")
+    @Column(name = "email_address",unique = true)
     private String emailAddress;
 
-    @Column(name="accountBalance")
+    @Column(name = "account_balance")
     private BigDecimal accountBalance;
 
     public AccountEntity() {
@@ -33,6 +31,10 @@ public class AccountEntity {
 
     public AccountEntity(long id) {
         this.id = id;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getName() {
@@ -60,5 +62,15 @@ public class AccountEntity {
     public AccountEntity setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "AccountEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", emailAddress='" + emailAddress + '\'' +
+                ", accountBalance=" + accountBalance +
+                '}';
     }
 }

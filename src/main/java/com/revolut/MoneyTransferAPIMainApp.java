@@ -4,11 +4,7 @@ package com.revolut;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.revolut.controllers.AccountController;
-import com.revolut.domain.AccountEntity;
-import com.revolut.model.EndpointOperationResponsePayload;
 import com.revolut.module.AppModule;
-import com.revolut.util.JsonParser;
-import com.revolut.util.JsonParserImpl;
 
 import static spark.Spark.*;
 
@@ -19,40 +15,26 @@ import static spark.Spark.*;
  */
 public class MoneyTransferAPIMainApp {
 
+    public static final int MAIN_PORT = 8080;
 
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(new AppModule());
+        setupPortNumber();
+        AccountController accountController = injector.getInstance(AccountController.class);
 
-        port(8080);
-        System.out.println("running on port 8080");
+        post("/account", accountController::createAccount);
+        get("/account", accountController::getAllAccounts);
+        System.out.println("running on port " + port());
+    }
 
-        post("/account", "application/json", (request, response) -> {
-
-            AccountController accountController = injector.getInstance(AccountController.class);
-
-            JsonParser jsonParser = injector.getInstance(JsonParserImpl.class);
-
-            AccountEntity accountEntity = jsonParser.toJsonPOJO(request.body(), AccountEntity.class);
-            EndpointOperationResponsePayload endpointOperationResponsePayload = accountController.createAccount(accountEntity);
-
-            response.type("application/json");
-            response.status(endpointOperationResponsePayload.getStatusCode());
-
-            String messageResponseBodyWhenDataIsNull = endpointOperationResponsePayload.getReason();
-            String messageResponseBodyWhenDataIsPresent = jsonParser.toJSONString(endpointOperationResponsePayload.getData());
-
-            return (endpointOperationResponsePayload.getData() == null)
-                    ? messageResponseBodyWhenDataIsNull
-                    : messageResponseBodyWhenDataIsPresent;
-        });
-
+    public static void setupPortNumber() {
+        port(MAIN_PORT);
     }
 
     /**
      * use this to start spark app for endpoint testing
      */
     public static void startApp() {
-
         MoneyTransferAPIMainApp.main(null);
         awaitInitialization();
     }

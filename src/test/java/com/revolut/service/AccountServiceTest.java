@@ -3,6 +3,7 @@ package com.revolut.service;
 import com.revolut.domain.AccountEntity;
 import com.revolut.model.EndpointOperationResponsePayload;
 import com.revolut.repository.AccountRepository;
+import com.revolut.util.JsonParser;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -20,12 +21,14 @@ public class AccountServiceTest {
 
     @Mock
     private AccountRepository accountRepository;
+    @Mock
+    private JsonParser jsonParser;
     private AccountService accountService;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        accountService = new AccountService(accountRepository);
+        accountService = new AccountService(accountRepository, jsonParser);
     }
 
     @Test

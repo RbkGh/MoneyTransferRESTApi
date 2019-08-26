@@ -5,24 +5,26 @@
              version="1.0">
 
     <persistence-unit name="db-manager" transaction-type="RESOURCE_LOCAL">
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
+        <class>com.revolut.domain.AccountEntity</class>
+        <!--jdbc:h2:~/moneydb;DB_CLOSE_DELAY=-1-->
         <properties>
-            <property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbcDriver" />
-            <property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:mem://localhost/tmp/moneydb" />
-            <property name="javax.persistence.jdbc.user" value="sa" />
-            <property name="javax.persistence.jdbc.password" value="" />
-            <!-- if this is true, hibernate will print (to stdout) the SQL it executes,
-                so you can check it to ensure it's not doing anything crazy -->
+            <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:h2:~/moneydb;DB_CLOSE_DELAY=-1"/>
+            <property name="javax.persistence.jdbc.user" value="sa"/>
+            <property name="javax.persistence.jdbc.password" value=""/>
 
-            <property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.id.new_generator_mappings" value="true"/>
+            <property name="hibernate.show_sql" value="true"/>
             <!-- since most database servers have slightly different versions of the
                 SQL, Hibernate needs you to choose a dialect so it knows the subtleties of
                 talking to that server -->
-            <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
             <!-- this tell Hibernate to update the DDL when it starts, very useful
                 for development, dangerous in production -->
-            <property name="hibernate.hbm2ddl.auto" value="update" />
+            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
         </properties>
+
     </persistence-unit>
 </persistence>

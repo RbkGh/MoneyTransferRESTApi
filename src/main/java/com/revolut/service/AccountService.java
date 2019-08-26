@@ -2,11 +2,16 @@ package com.revolut.service;
 
 import com.revolut.domain.AccountEntity;
 import com.revolut.model.EndpointOperationResponsePayload;
+import com.revolut.model.ErrorOperationWithReasonPayload;
+import com.revolut.model.SuccessfulOperationWithEmptyBodyPayload;
+import com.revolut.model.SuccessfulOperationWithJSONBodyResponsePayload;
 import com.revolut.repository.AccountRepository;
 import com.revolut.util.EmailValidator;
+import com.revolut.util.JsonParser;
 
 import javax.inject.Inject;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -18,19 +23,28 @@ import java.util.Objects;
 public class AccountService {
 
     private final AccountRepository accountRepository;
+    private JsonParser jsonParser;
 
     @Inject
-    AccountService(AccountRepository accountRepository) {
+    AccountService(AccountRepository accountRepository, JsonParser jsonParser) {
         this.accountRepository = accountRepository;
+        this.jsonParser = jsonParser;
     }
 
     public EndpointOperationResponsePayload createAccount(AccountEntity accountEntity) {
         Map<Boolean, String> isAccountPropertiesValidMap = isAccountEntityPropertiesValid(accountEntity);
         if (isAccountPropertiesValidMap.containsKey(true)) {
             this.accountRepository.saveAccount(accountEntity);
-            return new EndpointOperationResponsePayload(201, null, null);
+            return new SuccessfulOperationWithEmptyBodyPayload(201);
         }
-        return new EndpointOperationResponsePayload(400, null, isAccountPropertiesValidMap.get(false));
+        return new ErrorOperationWithReasonPayload(400, isAccountPropertiesValidMap.get(false));
+    }
+
+    public EndpointOperationResponsePayload getAllAccounts() {
+        List<AccountEntity> accountEntities = this.accountRepository.getAllAccounts();
+        if (accountEntities.isEmpty())
+            return new SuccessfulOperationWithJSONBodyResponsePayload(200, "[]");
+        return new SuccessfulOperationWithJSONBodyResponsePayload(200, this.jsonParser.toJSONString(accountEntities));
     }
 
     /**

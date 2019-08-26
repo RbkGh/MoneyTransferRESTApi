@@ -1,8 +1,11 @@
 package com.revolut.controllers;
 
 import com.revolut.domain.AccountEntity;
-import com.revolut.model.EndpointOperationResponsePayload;
 import com.revolut.service.AccountService;
+import com.revolut.util.JsonParser;
+import com.revolut.util.ResponseCreator;
+import spark.Request;
+import spark.Response;
 
 import javax.inject.Inject;
 
@@ -14,14 +17,25 @@ import javax.inject.Inject;
 public class AccountControllerImpl implements AccountController {
 
     private AccountService accountService;
+    private JsonParser jsonParser;
+    private ResponseCreator responseCreator;
 
     @Inject
-    AccountControllerImpl(AccountService accountService) {
+    AccountControllerImpl(AccountService accountService, JsonParser jsonParser, ResponseCreator responseCreator) {
         this.accountService = accountService;
+        this.jsonParser = jsonParser;
+        this.responseCreator = responseCreator;
     }
 
     @Override
-    public EndpointOperationResponsePayload createAccount(AccountEntity accountEntity) {
-        return accountService.createAccount(accountEntity);
+    public String createAccount(Request request, Response response) {
+        AccountEntity accountEntity = jsonParser.toJsonPOJO(request.body(), AccountEntity.class);
+        return responseCreator.respondToHttpEndpoint(response, accountService.createAccount(accountEntity));
+    }
+
+    @Override
+    public String getAllAccounts(Request request, Response response) {
+
+        return responseCreator.respondToHttpEndpoint(response, accountService.getAllAccounts());
     }
 }
