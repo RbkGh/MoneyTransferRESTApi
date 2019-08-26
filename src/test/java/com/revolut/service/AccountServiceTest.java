@@ -77,6 +77,20 @@ public class AccountServiceTest {
         assertEquals(endpointOperationResponsePayload.getStatusCode(), 400);
     }
 
+    @Test
+    public void delete_account_expect_status_code_400() {
+
+        long id = 3;
+        AccountEntity accountEntity = new AccountEntity(id);
+        accountEntity.setName("ff");
+        accountEntity.setEmailAddress("bb");
+
+        Mockito.when(accountRepository.getAccountById(id)).thenReturn(accountEntity);
+        EndpointOperationResponsePayload endpointOperationResponsePayload = accountService.deleteAccountById(String.valueOf(id));
+
+        assertEquals(endpointOperationResponsePayload.getStatusCode(), 204);
+    }
+
     @Test(expected = NullPointerException.class)
     public void create_account_when_account_data_is_null_expect_null_pointer_exception_thrown() {
         EndpointOperationResponsePayload endpointOperationResponsePayload = accountService.createAccount(null);

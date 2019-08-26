@@ -56,7 +56,7 @@ public class AccountService {
 
     public EndpointOperationResponsePayload deleteAccountById(String id) {
         if (Objects.nonNull(accountRepository.getAccountById(Long.valueOf(id))))
-            return new SuccessfulOperationWithEmptyBodyPayload(200);
+            return new SuccessfulOperationWithEmptyBodyPayload(204);
         return new ErrorOperationWithReasonPayload(404, "Account with id =" + id + " not found.");
     }
 
