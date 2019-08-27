@@ -1,6 +1,8 @@
 # MoneyTransferRESTApi - A dead simple Java REST API(without Spring) <br> to transfer money between accounts <br>
 ### Shot For 100% Code Coverage
 ![alt text](https://github.com/RbkGh/MoneyTransferRESTApi/blob/master/demo_test.png)
+### Requirements
+> Java 8+
 ### Quick Start - Run
 1.In Project Root Directory,type <br/>
 ```$xslt
