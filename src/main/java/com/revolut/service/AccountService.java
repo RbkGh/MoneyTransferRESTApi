@@ -9,7 +9,6 @@ import com.revolut.model.SuccessfulOperationWithEmptyBodyPayload;
 import com.revolut.model.SuccessfulOperationWithJSONBodyResponsePayload;
 import com.revolut.repository.AccountEntityRepository;
 import com.revolut.repository.AccountTransactionRepository;
-import com.revolut.util.EmailValidator;
 import com.revolut.util.JsonParser;
 
 import javax.inject.Inject;
@@ -30,19 +29,24 @@ public class AccountService {
     private JsonParser jsonParser;
 
     @Inject
-    AccountService(AccountEntityRepository accountEntityRepository, AccountTransactionRepository accountTransactionRepository, JsonParser jsonParser) {
+    AccountService(AccountEntityRepository accountEntityRepository,
+                   AccountTransactionRepository accountTransactionRepository,
+                   JsonParser jsonParser) {
         this.accountEntityRepository = accountEntityRepository;
         this.accountTransactionRepository = accountTransactionRepository;
         this.jsonParser = jsonParser;
     }
 
     public EndpointOperationResponsePayload createAccount(AccountEntity accountEntity) {
-        Map<Boolean, String> isAccountPropertiesValidMap = isAccountEntityPropertiesValid(accountEntity);
-        if (isAccountPropertiesValidMap.containsKey(true)) {
+
+        Set<ConstraintViolation<AccountEntity>> constraintViolations =
+                Validation.buildDefaultValidatorFactory().getValidator().validate(accountEntity);
+
+        if (constraintViolations.size() == 0) {
             this.accountEntityRepository.saveAccount(accountEntity);
             return new SuccessfulOperationWithEmptyBodyPayload(201);
         }
-        return new ErrorOperationWithReasonPayload(400, isAccountPropertiesValidMap.get(false));
+        return new ErrorOperationWithReasonPayload(400, constraintViolations.iterator().next().getMessage());
     }
 
     public EndpointOperationResponsePayload createAccountTransaction(String senderAccountId, AccountTransactionEntity accountTransactionEntity) throws Exception {
@@ -60,7 +64,7 @@ public class AccountService {
                 if (canUserInitiateMoneyTransfer(accountTransactionEntity)) {
 
                     try {
-                        updateUserAccountBalancesAfterTransaction(accountTransactionEntity);
+                        updateUserAccountBalancesInDatastore(accountTransactionEntity);
                     } catch (Exception ex) {
                         return new ErrorOperationWithReasonPayload(500, "Could not complete request");
                     }
@@ -101,40 +105,6 @@ public class AccountService {
         return new ErrorOperationWithReasonPayload(404, "Account with id =" + id + " not found.");
     }
 
-    /**
-     * validate account properties,
-     * at each point,map returned will contain either a {@link Boolean#TRUE} or {@link Boolean#FALSE} only as key.
-     *
-     * @param accountEntity
-     * @return
-     */
-    private Map<Boolean, String> isAccountEntityPropertiesValid(AccountEntity accountEntity) {
-
-        //is name field null or empty?
-        if (Objects.isNull(accountEntity.getName()) || accountEntity.getName().isEmpty())
-            return new HashMap<Boolean, String>() {{
-                put(false, "Name is required");
-            }};
-
-        //is email address field null or empty?
-        if (Objects.isNull(accountEntity.getEmailAddress()) || accountEntity.getEmailAddress().isEmpty())
-            return new HashMap<Boolean, String>() {{
-                put(false, "Email address is required");
-            }};
-
-        //is email format valid?
-        if (!EmailValidator.isValidEmailAddress(accountEntity.getEmailAddress()))
-            return new HashMap<Boolean, String>() {{
-                put(false, "Email address format is incorrect.Must be of format : email@email.com");
-            }};
-
-        //all checks completed ,thus return true
-        return new HashMap<Boolean, String>() {{
-            put(true, null);
-        }};
-
-    }
-
     private boolean canUserInitiateMoneyTransfer(AccountTransactionEntity accountTransactionEntity) {
         AccountEntity senderAccount =
                 accountEntityRepository.getAccountById(accountTransactionEntity.getSendingAccountId());
@@ -148,10 +118,9 @@ public class AccountService {
         if (comparisonResult >= 0)
             return true;
         return false;
-
     }
 
-    void updateUserAccountBalancesAfterTransaction(AccountTransactionEntity accountTransactionEntity) throws Exception {
+    void updateUserAccountBalancesInDatastore(AccountTransactionEntity accountTransactionEntity) {
         AccountEntity senderAccount =
                 accountEntityRepository.getAccountById(accountTransactionEntity.getSendingAccountId());
 
@@ -161,17 +130,16 @@ public class AccountService {
         BigDecimal transactionAmount = accountTransactionEntity.getTransactionAmount();
 
 
-        AccountEntity updatedSenderAccountBalance = debitAccountInDatastore(senderAccount, transactionAmount);
-        AccountEntity updatedRecieverAccountBalance = creditAccountInDatastore(receiverAccount, transactionAmount);
+        AccountEntity updatedSenderAccountBalance = debitAccountEntity(senderAccount, transactionAmount);
+        AccountEntity updatedRecieverAccountBalance = creditAccountEntity(receiverAccount, transactionAmount);
 
         accountEntityRepository
                 .updateAccountBalancesAndTransactionLog(updatedSenderAccountBalance
                         , updatedRecieverAccountBalance
                         , accountTransactionEntity);
-
     }
 
-    private AccountEntity creditAccountInDatastore(AccountEntity accountEntity, BigDecimal amountToCredit) throws Exception {
+    private AccountEntity creditAccountEntity(AccountEntity accountEntity, BigDecimal amountToCredit) {
 
         BigDecimal currentBalanceBeforeAddition = accountEntity.getAccountBalance();
 
@@ -182,7 +150,7 @@ public class AccountService {
         return accountEntity;
     }
 
-    private AccountEntity debitAccountInDatastore(AccountEntity accountEntity, BigDecimal amountToDebit) throws Exception {
+    private AccountEntity debitAccountEntity(AccountEntity accountEntity, BigDecimal amountToDebit) {
 
         BigDecimal currentBalanceBeforeDebit = accountEntity.getAccountBalance();
 

@@ -1,6 +1,8 @@
 package com.revolut.domain;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
 
 /**
@@ -16,10 +18,13 @@ public class AccountEntity {
     @GeneratedValue
     private long id;
 
+    @NotEmpty(message = "Name must be present")
     @Column(name = "name")
     private String name;
 
-    @Column(name = "email_address",unique = true)
+    @NotEmpty(message = "Name is required")
+    @Email(message = "Email address is not valid.")
+    @Column(name = "email_address", unique = true)
     private String emailAddress;
 
     @Column(name = "account_balance")

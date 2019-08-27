@@ -23,7 +23,9 @@ public class AccountTransactionService {
     private JsonParser jsonParser;
 
     @Inject
-    public AccountTransactionService(AccountEntityRepository accountEntityRepository, AccountTransactionRepository accountTransactionRepository, JsonParser jsonParser) {
+    public AccountTransactionService(AccountEntityRepository accountEntityRepository,
+                                     AccountTransactionRepository accountTransactionRepository,
+                                     JsonParser jsonParser) {
         this.accountEntityRepository = accountEntityRepository;
         this.accountTransactionRepository = accountTransactionRepository;
         this.jsonParser = jsonParser;

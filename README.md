@@ -35,15 +35,16 @@ Implicit requirements:
 2. There are no detailed requirements, use common sense.
 ```
 ### Solution 
+> Why do I find this interesting ? The last time I worked on a rest api in java without Spring boot was in somewhere<br>
+2015 when I had the opportunity to deploy Ghana TV License payment channel - Jersey with raw java.<br>
+It's just fun to try to build without any spring magic,And I get to go low level again,NEW LEARNINGS!! :fire::fire::fire:
 
 >Assumption 1 : Java was chosen. Kotlin would have been sweeter & swifter <br>
-but why would I be on the JVM(Jungle Of The Violent Monks) & expect an easy life? 
-
-:stuck_out_tongue:
+but why would I be on the JVM(Jungle Of The Violent Monks) & expect an easy life? :stuck_out_tongue:
 
 >Assumption 2 : Keep it simple . What's simpler than Guice+Spark+Hibernate With Repository Pattern & <br>
-a customized MVC style design? Oh,currency and account type and other minute details in banking were <br>
-were taken out intentionally to keep it simple.Couldn't use one of my numerous docker templates :disappointed_relieved:
+a customized MVC style design? Oh,currency and account type and other negligible details that doesn't make money get lost in banking were <br>
+taken out intentionally to keep it simple.Couldn't use one of my numerous docker templates :disappointed_relieved:
 
 >Assumption 3: API invoked by multiple systems & services? <br>
 Well,I guess we need to keep it stateless.Is that not REST commandment number 1?<br>
@@ -73,7 +74,7 @@ There is a code snippet which is worth a shoutout :
 ```
 > Above code inside AccountEntityRepository ensures that nobody's money is lost anywhere,unless it's crediting my account :runner: :runner: :collision:
 
-> Still curious? Checkout a <1min audio introduction of the codebase here :  [RIGHT HERE...]() 
+> Still curious? Checkout a 2min audio introduction of the codebase :arrow_right: :arrow_right:  [RIGHT HERE...](http://bit.ly/2Zukbgn) 
 
 
 

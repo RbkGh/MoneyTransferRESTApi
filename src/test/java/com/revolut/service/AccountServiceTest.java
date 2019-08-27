@@ -94,7 +94,7 @@ public class AccountServiceTest {
         assertEquals(endpointOperationResponsePayload.getStatusCode(), 204);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void create_account_when_account_data_is_null_expect_null_pointer_exception_thrown() {
         EndpointOperationResponsePayload endpointOperationResponsePayload = accountService.createAccount(null);
         assertEquals(endpointOperationResponsePayload.getStatusCode(), 400);
