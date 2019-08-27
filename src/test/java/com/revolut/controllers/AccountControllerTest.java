@@ -64,6 +64,7 @@ public class AccountControllerTest {
 
     @Test
     public void get_account_by_id_through_http_endpoint_expect_404_status() {
+
         String id = "1";
         Response res = post(ACCOUNTS_ENDPOINT + "/" + id);
 
@@ -72,10 +73,24 @@ public class AccountControllerTest {
 
     @Test
     public void delete_account_by_id_through_http_endpoint_expect_404_status() {
+
         String id = "1";
         Response res = delete(ACCOUNTS_ENDPOINT + "/" + id);
 
         assertEquals(res.statusCode(), 404);
+    }
+
+    @Test
+    public void create_money_transfer_transaction_through_http_endpoint_expect_404_status() {
+
+        String accountId = "3";
+
+        Response resp = given().
+                when().
+                body("{sendingAccountId:3,receivingAccountId:2,transactionAmount:300}").
+                post(ACCOUNTS_ENDPOINT + "/" + accountId + "/transactions");
+
+        assertEquals(404,resp.getStatusCode());
     }
 
 }

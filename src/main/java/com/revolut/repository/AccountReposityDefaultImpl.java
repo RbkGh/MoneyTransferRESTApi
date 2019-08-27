@@ -5,6 +5,7 @@ import com.revolut.domain.AccountEntity;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,6 +30,26 @@ public class AccountReposityDefaultImpl implements AccountRepository {
         entityManager.persist(accountEntity);
         entityManager.getTransaction().commit();
         return getAccountByEmail(accountEntity.getEmailAddress());
+    }
+
+    @Override
+    public boolean doesAccountExistById(Long id) {
+        return Objects.nonNull(getAccountById(id));
+    }
+
+    @Override
+    public void updateUserAccountBalance(AccountEntity accountEntity, BigDecimal bigDecimal) throws Exception {
+        //update Student s set s.address='Hyderabad' where s.studentId=5
+        try {
+            Long accountId = accountEntity.getId();
+
+            Query query = entityManager.createQuery("update " +
+                    AccountEntity.class.getName() + " acc set acc.accountBalance=?1 where acc.id=?2");
+            query.setParameter(1, bigDecimal);
+            query.setParameter(2, accountId);
+        } catch (Exception exception) {
+            throw new Exception(exception.getMessage());
+        }
     }
 
     @Override
@@ -62,8 +83,6 @@ public class AccountReposityDefaultImpl implements AccountRepository {
         Query query = entityManager.createQuery("from " + AccountEntity.class.getName() + " a");
 
         List<AccountEntity> accountEntities = query.getResultList();
-
-        accountEntities.forEach(accountEntity -> System.out.println("\nname = " + accountEntity.getName()));
         return accountEntities;
     }
 

@@ -9,6 +9,8 @@ import com.revolut.controllers.AccountController;
 import com.revolut.controllers.AccountControllerImpl;
 import com.revolut.repository.AccountRepository;
 import com.revolut.repository.AccountReposityDefaultImpl;
+import com.revolut.repository.AccountTransactionRepository;
+import com.revolut.repository.AccountTransactionRepositoryDefaultImpl;
 import com.revolut.util.JsonParser;
 import com.revolut.util.JsonParserImpl;
 import com.revolut.util.ResponseCreator;
@@ -35,6 +37,7 @@ public class AppModule extends AbstractModule {
         bind(AccountRepository.class).to(AccountReposityDefaultImpl.class);
         bind(JsonParser.class).to(JsonParserImpl.class);
         bind(ResponseCreator.class).to(ResponseCreatorImpl.class);
+        bind(AccountTransactionRepository.class).to(AccountTransactionRepositoryDefaultImpl.class);
     }
 
     @Provides

@@ -40,6 +40,8 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'org.slf4j:slf4j-simple:1.7.21'
     implementation 'com.google.inject:guice:4.1.0'
+    implementation 'org.hibernate.validator:hibernate-validator:6.0.17.Final'
+    implementation 'org.glassfish:javax.el:3.0.1-b08'
     implementation 'org.hibernate:hibernate-core:5.4.4.Final'
     implementation 'org.hibernate:hibernate-entitymanager:5.4.4.Final'
     implementation 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.2.Final'

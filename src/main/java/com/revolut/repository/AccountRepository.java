@@ -2,6 +2,7 @@ package com.revolut.repository;
 
 import com.revolut.domain.AccountEntity;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -20,4 +21,8 @@ public interface AccountRepository {
     List<AccountEntity> getAllAccounts();
 
     void deleteAccount(Long id);
+
+    boolean doesAccountExistById(Long id);
+
+    void updateUserAccountBalance(AccountEntity accountEntity, BigDecimal bigDecimal) throws Exception;
 }
