@@ -10,7 +10,7 @@ import java.util.List;
  * Date: 2019-08-24
  * Time: 20:42
  */
-public interface AccountRepository {
+public interface AccountEntityRepository {
 
     AccountEntity saveAccount(AccountEntity accountEntity);
 

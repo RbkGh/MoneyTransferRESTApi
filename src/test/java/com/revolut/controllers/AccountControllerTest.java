@@ -19,9 +19,11 @@ public class AccountControllerTest {
 
     public static final String ACCOUNTS_ENDPOINT = "/accounts";
 
+
     @Before
     public void setUp() {
         MoneyTransferAPIMainApp.startApp();
+
     }
 
     @After
@@ -90,7 +92,21 @@ public class AccountControllerTest {
                 body("{sendingAccountId:3,receivingAccountId:2,transactionAmount:300}").
                 post(ACCOUNTS_ENDPOINT + "/" + accountId + "/transactions");
 
-        assertEquals(404,resp.getStatusCode());
+        assertEquals(404, resp.getStatusCode());
+    }
+
+
+    @Test
+    public void get_all_money_transFer_transactions_through_http_endpoint_expect_404_status() {
+
+
+        String accountId = "3";
+        Response resp = given().
+                when().
+                get(ACCOUNTS_ENDPOINT + "/" + accountId + "/transactions");
+
+        System.out.println("response body--"+resp.asString());
+        assertEquals(404, resp.getStatusCode());
     }
 
 }

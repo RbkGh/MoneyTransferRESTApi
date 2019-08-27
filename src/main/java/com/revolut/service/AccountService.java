@@ -7,7 +7,7 @@ import com.revolut.model.EndpointOperationResponsePayload;
 import com.revolut.model.ErrorOperationWithReasonPayload;
 import com.revolut.model.SuccessfulOperationWithEmptyBodyPayload;
 import com.revolut.model.SuccessfulOperationWithJSONBodyResponsePayload;
-import com.revolut.repository.AccountRepository;
+import com.revolut.repository.AccountEntityRepository;
 import com.revolut.repository.AccountTransactionRepository;
 import com.revolut.util.EmailValidator;
 import com.revolut.util.JsonParser;
@@ -25,13 +25,13 @@ import java.util.*;
  */
 public class AccountService {
 
-    private final AccountRepository accountRepository;
+    private final AccountEntityRepository accountEntityRepository;
     private final AccountTransactionRepository accountTransactionRepository;
     private JsonParser jsonParser;
 
     @Inject
-    AccountService(AccountRepository accountRepository, AccountTransactionRepository accountTransactionRepository, JsonParser jsonParser) {
-        this.accountRepository = accountRepository;
+    AccountService(AccountEntityRepository accountEntityRepository, AccountTransactionRepository accountTransactionRepository, JsonParser jsonParser) {
+        this.accountEntityRepository = accountEntityRepository;
         this.accountTransactionRepository = accountTransactionRepository;
         this.jsonParser = jsonParser;
     }
@@ -39,7 +39,7 @@ public class AccountService {
     public EndpointOperationResponsePayload createAccount(AccountEntity accountEntity) {
         Map<Boolean, String> isAccountPropertiesValidMap = isAccountEntityPropertiesValid(accountEntity);
         if (isAccountPropertiesValidMap.containsKey(true)) {
-            this.accountRepository.saveAccount(accountEntity);
+            this.accountEntityRepository.saveAccount(accountEntity);
             return new SuccessfulOperationWithEmptyBodyPayload(201);
         }
         return new ErrorOperationWithReasonPayload(400, isAccountPropertiesValidMap.get(false));
@@ -56,7 +56,7 @@ public class AccountService {
             //execute here
             Long receiverAccountId = accountTransactionEntity.getReceivingAccountId();
             //check if both accounts exist in database.
-            if (accountRepository.doesAccountExistById(Long.valueOf(senderAccountId)) && accountRepository.doesAccountExistById(receiverAccountId)) {
+            if (accountEntityRepository.doesAccountExistById(Long.valueOf(senderAccountId)) && accountEntityRepository.doesAccountExistById(receiverAccountId)) {
 
                 if (canUserInitiateMoneyTransfer(accountTransactionEntity)) {
 
@@ -79,23 +79,23 @@ public class AccountService {
     }
 
     public EndpointOperationResponsePayload getAllAccounts() {
-        List<AccountEntity> accountEntities = this.accountRepository.getAllAccounts();
+        List<AccountEntity> accountEntities = this.accountEntityRepository.getAllAccounts();
         if (accountEntities.isEmpty())
             return new SuccessfulOperationWithJSONBodyResponsePayload(200, "[]");
         return new SuccessfulOperationWithJSONBodyResponsePayload(200, this.jsonParser.toJSONString(accountEntities));
     }
 
     public EndpointOperationResponsePayload getAccountById(String id) {
-        AccountEntity accountEntity = this.accountRepository.getAccountById(Long.valueOf(id));
+        AccountEntity accountEntity = this.accountEntityRepository.getAccountById(Long.valueOf(id));
         if (Objects.nonNull(accountEntity))
             return new SuccessfulOperationWithJSONBodyResponsePayload(200, this.jsonParser.toJSONString(accountEntity));
         return new ErrorOperationWithReasonPayload(404, "Account with id=" + id + " not found.");
     }
 
     public EndpointOperationResponsePayload deleteAccountById(String id) {
-        if (Objects.nonNull(accountRepository.getAccountById(Long.valueOf(id)))) {
+        if (Objects.nonNull(accountEntityRepository.getAccountById(Long.valueOf(id)))) {
 
-            accountRepository.deleteAccount(Long.valueOf(id));
+            accountEntityRepository.deleteAccount(Long.valueOf(id));
             return new SuccessfulOperationWithEmptyBodyPayload(204);
         }
         return new ErrorOperationWithReasonPayload(404, "Account with id =" + id + " not found.");
@@ -137,7 +137,7 @@ public class AccountService {
 
     private boolean canUserInitiateMoneyTransfer(AccountTransactionEntity accountTransactionEntity) {
         AccountEntity senderAccount =
-                accountRepository.getAccountById(accountTransactionEntity.getSendingAccountId());
+                accountEntityRepository.getAccountById(accountTransactionEntity.getSendingAccountId());
 
         BigDecimal transactionAmount =
                 accountTransactionEntity.getTransactionAmount();
@@ -153,10 +153,10 @@ public class AccountService {
 
     void updateUserAccountBalancesAfterTransaction(AccountTransactionEntity accountTransactionEntity) throws Exception {
         AccountEntity senderAccount =
-                accountRepository.getAccountById(accountTransactionEntity.getSendingAccountId());
+                accountEntityRepository.getAccountById(accountTransactionEntity.getSendingAccountId());
 
         AccountEntity receiverAccount =
-                accountRepository.getAccountById(accountTransactionEntity.getSendingAccountId());
+                accountEntityRepository.getAccountById(accountTransactionEntity.getSendingAccountId());
 
         BigDecimal transactionAmount = accountTransactionEntity.getTransactionAmount();
 
@@ -181,7 +181,7 @@ public class AccountService {
 
         accountEntity.setAccountBalance(currentBalanceAfterAddition);
 
-        accountRepository.updateUserAccountBalance(accountEntity, currentBalanceAfterAddition);
+        accountEntityRepository.updateUserAccountBalance(accountEntity, currentBalanceAfterAddition);
     }
 
     private void debitAccountInDatastore(AccountEntity accountEntity, BigDecimal amountToDebit) throws Exception {
@@ -192,7 +192,7 @@ public class AccountService {
 
         accountEntity.setAccountBalance(currentBalanceAfterDebit);
 
-        accountRepository.updateUserAccountBalance(accountEntity, currentBalanceAfterDebit);
+        accountEntityRepository.updateUserAccountBalance(accountEntity, currentBalanceAfterDebit);
     }
 
     private void createAccountTransactionInDatastore(AccountTransactionEntity accountTransactionEntity, TransactionStatus transactionStatus, String reason) throws Exception {

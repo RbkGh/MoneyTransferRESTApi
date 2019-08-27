@@ -18,8 +18,15 @@ public class MoneyTransferAPIMainApp {
     public static final int MAIN_PORT = 8080;
 
     public static void main(String[] args) {
-        Injector injector = Guice.createInjector(new AppModule());
+
         setupPortNumber();
+        initializeRoutes();
+        
+        System.out.println("running on port " + port());
+    }
+
+    public static void initializeRoutes() {
+        Injector injector = Guice.createInjector(new AppModule());
         AccountController accountController = injector.getInstance(AccountController.class);
 
         post("/accounts", accountController::createAccount);
@@ -27,8 +34,7 @@ public class MoneyTransferAPIMainApp {
         get("/accounts/:id", accountController::getAcountById);
         delete("/accounts/:id", accountController::deleteAccountById);
         post("/accounts/:id/transactions", accountController::createAccountTransaction);
-
-        System.out.println("running on port " + port());
+        get("/accounts/:id/transactions", accountController::getAllTransactionsOfAccount);
     }
 
     public static void setupPortNumber() {

@@ -28,6 +28,6 @@ public interface AccountTransactionRepository {
      * @param accountId
      * @return
      */
-    List<AccountTransactionEntity> getAccountTransactions(Long accountId);
+    List<AccountTransactionEntity> getAccountTransactionsByAccountId(Long accountId);
 
 }

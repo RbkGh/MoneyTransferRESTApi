@@ -19,4 +19,6 @@ public interface AccountController {
     String deleteAccountById(Request request, Response response);
 
     String createAccountTransaction(Request request, Response response) throws Exception;
+
+    String getAllTransactionsOfAccount(Request request,Response response);
 }

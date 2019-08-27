@@ -14,13 +14,13 @@ import java.util.Objects;
  * Date: 2019-08-24
  * Time: 20:46
  */
-public class AccountReposityDefaultImpl implements AccountRepository {
+public class AccountEntityReposityDefaultImpl implements AccountEntityRepository {
 
 
     private EntityManager entityManager;
 
     @Inject
-    public AccountReposityDefaultImpl(EntityManager entityManager) {
+    public AccountEntityReposityDefaultImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
@@ -39,7 +39,6 @@ public class AccountReposityDefaultImpl implements AccountRepository {
 
     @Override
     public void updateUserAccountBalance(AccountEntity accountEntity, BigDecimal bigDecimal) throws Exception {
-        //update Student s set s.address='Hyderabad' where s.studentId=5
         try {
             Long accountId = accountEntity.getId();
 

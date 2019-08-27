@@ -43,8 +43,8 @@ public class AccountTransactionRepositoryDefaultImpl implements AccountTransacti
     }
 
     @Override
-    public List<AccountTransactionEntity> getAccountTransactions(Long accountId) {
-        Query query = entityManager.createQuery("from " + AccountEntity.class.getName() + " a");
+    public List<AccountTransactionEntity> getAccountTransactionsByAccountId(Long accountId) {
+        Query query = entityManager.createQuery("from " + AccountTransactionEntity.class.getName() + " a");
 
         List<AccountTransactionEntity> accountTransactionEntities = query.getResultList();
 

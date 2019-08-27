@@ -8,7 +8,8 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
         <class>com.revolut.domain.AccountEntity</class>
-        <!--jdbc:h2:~/moneydb;DB_CLOSE_DELAY=-1-->
+        <class>com.revolut.domain.AccountTransactionEntity</class>
+
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:h2:~/moneydb;DB_CLOSE_DELAY=-1"/>
@@ -17,12 +18,9 @@
 
             <property name="hibernate.id.new_generator_mappings" value="true"/>
             <property name="hibernate.show_sql" value="true"/>
-            <!-- since most database servers have slightly different versions of the
-                SQL, Hibernate needs you to choose a dialect so it knows the subtleties of
-                talking to that server -->
+
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
-            <!-- this tell Hibernate to update the DDL when it starts, very useful
-                for development, dangerous in production -->
+
             <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
         </properties>
 

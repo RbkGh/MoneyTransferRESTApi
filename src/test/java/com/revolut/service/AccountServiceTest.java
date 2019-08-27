@@ -2,7 +2,7 @@ package com.revolut.service;
 
 import com.revolut.domain.AccountEntity;
 import com.revolut.model.EndpointOperationResponsePayload;
-import com.revolut.repository.AccountRepository;
+import com.revolut.repository.AccountEntityRepository;
 import com.revolut.repository.AccountTransactionRepository;
 import com.revolut.util.JsonParser;
 import org.junit.Before;
@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 public class AccountServiceTest {
 
     @Mock
-    private AccountRepository accountRepository;
+    private AccountEntityRepository accountEntityRepository;
     @Mock
     private AccountTransactionRepository accountTransactionRepository;
     @Mock
@@ -31,7 +31,7 @@ public class AccountServiceTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        accountService = new AccountService(accountRepository, accountTransactionRepository, jsonParser);
+        accountService = new AccountService(accountEntityRepository, accountTransactionRepository, jsonParser);
     }
 
     @Test
@@ -40,7 +40,7 @@ public class AccountServiceTest {
         accountEntity.setEmailAddress("email@gmail.com");
         accountEntity.setName("rodney");
 
-        Mockito.when(accountRepository.saveAccount(accountEntity)).thenReturn(accountEntity);
+        Mockito.when(accountEntityRepository.saveAccount(accountEntity)).thenReturn(accountEntity);
         EndpointOperationResponsePayload endpointOperationResponsePayload = accountService.createAccount(accountEntity);
 
         assertEquals(endpointOperationResponsePayload.getStatusCode(), 201);
@@ -50,7 +50,7 @@ public class AccountServiceTest {
     public void create_account_when_no_email_present_expect_status_code_400() {
         AccountEntity accountEntity = new AccountEntity();
 
-        Mockito.when(accountRepository.saveAccount(accountEntity)).thenReturn(accountEntity);
+        Mockito.when(accountEntityRepository.saveAccount(accountEntity)).thenReturn(accountEntity);
         EndpointOperationResponsePayload endpointOperationResponsePayload = accountService.createAccount(accountEntity);
 
         assertTrue(endpointOperationResponsePayload.getStatusCode() == 400);
@@ -62,7 +62,7 @@ public class AccountServiceTest {
         accountEntity.setEmailAddress("");
         accountEntity.setName("");
 
-        Mockito.when(accountRepository.saveAccount(accountEntity)).thenReturn(accountEntity);
+        Mockito.when(accountEntityRepository.saveAccount(accountEntity)).thenReturn(accountEntity);
         EndpointOperationResponsePayload endpointOperationResponsePayload = accountService.createAccount(accountEntity);
 
         assertEquals(endpointOperationResponsePayload.getStatusCode(), 400);
@@ -74,7 +74,7 @@ public class AccountServiceTest {
         accountEntity.setName("ff");
         accountEntity.setEmailAddress("bb");
 
-        Mockito.when(accountRepository.saveAccount(accountEntity)).thenReturn(accountEntity);
+        Mockito.when(accountEntityRepository.saveAccount(accountEntity)).thenReturn(accountEntity);
         EndpointOperationResponsePayload endpointOperationResponsePayload = accountService.createAccount(accountEntity);
 
         assertEquals(endpointOperationResponsePayload.getStatusCode(), 400);
@@ -88,7 +88,7 @@ public class AccountServiceTest {
         accountEntity.setName("ff");
         accountEntity.setEmailAddress("bb");
 
-        Mockito.when(accountRepository.getAccountById(id)).thenReturn(accountEntity);
+        Mockito.when(accountEntityRepository.getAccountById(id)).thenReturn(accountEntity);
         EndpointOperationResponsePayload endpointOperationResponsePayload = accountService.deleteAccountById(String.valueOf(id));
 
         assertEquals(endpointOperationResponsePayload.getStatusCode(), 204);

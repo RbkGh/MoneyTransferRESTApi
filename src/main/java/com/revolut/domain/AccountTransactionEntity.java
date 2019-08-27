@@ -26,7 +26,7 @@ public class AccountTransactionEntity {
     @Column(nullable = false)
     private Long receivingAccountId;
 
-    @NotNull(message = "Transaction Account cannot be absent.")
+    @NotNull(message = "Transaction Amount cannot be absent.")
     @Column(nullable = false)
     private BigDecimal transactionAmount;
 
@@ -41,6 +41,18 @@ public class AccountTransactionEntity {
      */
     @Column
     private String reason;
+
+    public AccountTransactionEntity(@NotNull(message = "Sender Account id must be present") Long sendingAccountId,
+                                    @NotNull(message = "Receiving Account id must be present") Long receivingAccountId,
+                                    @NotNull(message = "Transaction Amount cannot be absent.") BigDecimal transactionAmount,
+                                    TransactionStatus transactionStatus,
+                                    Date dateOfTransaction) {
+        this.sendingAccountId = sendingAccountId;
+        this.receivingAccountId = receivingAccountId;
+        this.transactionAmount = transactionAmount;
+        this.transactionStatus = transactionStatus;
+        this.dateOfTransaction = dateOfTransaction;
+    }
 
     public Date getDateOfTransaction() {
         return dateOfTransaction;
