@@ -1,5 +1,6 @@
 # MoneyTransferRESTApi - A dead simple Java REST API(without Spring) <br> to transfer money between accounts <br>
-
+### Shot For 100% Code Coverage
+![alt text](https://github.com/RbkGh/MoneyTransferRESTApi/blob/master/demo_test.png)
 ### Quick Start - Run
 1.In Project Root Directory,type <br/>
 ```$xslt
@@ -49,7 +50,30 @@ Well,I guess we need to keep it stateless.Is that not REST commandment number 1?
 Multi-threaded environment? Build for high concurrent requests ?<br>
 Did I hear someone say Sparkjava does 200 ThreadPools by default [here](https://stackoverflow.com/a/54132981/7315979) ?
 
+>Assumption 4: Point 5 mentioned in memory,H2 inmemory db was used for this 
+There is a code snippet which is worth a shoutout : 
+```java
 
+  @Override
+    public void updateAccountBalancesAndTransactionLog(AccountEntity updatedSenderAccountBalance,
+                                                       AccountEntity updatedRecieverAccountBalance,
+                                                       AccountTransactionEntity accountTransactionEntity) {
+
+        entityManager.getTransaction().begin();
+
+        entityManager.persist(updatedSenderAccountBalance);
+        entityManager.persist(updatedRecieverAccountBalance);
+        entityManager.persist(updateTransactionEntity(accountTransactionEntity,
+                TransactionStatus.SUCCESS,
+                ""));
+
+        entityManager.getTransaction().commit();
+    }
+
+```
+> Above code inside AccountEntityRepository ensures that nobody's money is lost anywhere,unless it's crediting my account :runner: :runner: :collision:
+
+> Still curious? Checkout a <1min audio introduction of the codebase here :  [RIGHT HERE...]() 
 
 
 
