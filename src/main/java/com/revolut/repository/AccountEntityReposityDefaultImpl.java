@@ -1,11 +1,15 @@
 package com.revolut.repository;
 
 import com.revolut.domain.AccountEntity;
+import com.revolut.domain.AccountTransactionEntity;
+import com.revolut.domain.TransactionStatus;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -52,6 +56,32 @@ public class AccountEntityReposityDefaultImpl implements AccountEntityRepository
     }
 
     @Override
+    public void updateAccountBalancesAndTransactionLog(AccountEntity updatedSenderAccountBalance,
+                                                       AccountEntity updatedRecieverAccountBalance,
+                                                       AccountTransactionEntity accountTransactionEntity) {
+
+        entityManager.getTransaction().begin();
+
+        entityManager.persist(updatedSenderAccountBalance);
+        entityManager.persist(updatedRecieverAccountBalance);
+        entityManager.persist(updateTransactionEntity(accountTransactionEntity,
+                TransactionStatus.SUCCESS,
+                ""));
+
+        entityManager.getTransaction().commit();
+    }
+
+    private AccountTransactionEntity updateTransactionEntity(AccountTransactionEntity accountTransactionEntity,
+                                                             TransactionStatus transactionStatus,
+                                                             String reason) {
+        accountTransactionEntity.setTransactionStatus(transactionStatus);
+        accountTransactionEntity.setReason(reason);
+        accountTransactionEntity.setDateOfTransaction(new Date(System.currentTimeMillis()));
+
+        return accountTransactionEntity;
+    }
+
+    @Override
     public AccountEntity getAccountById(Long id) {
         AccountEntity accountEntity = null;
         try {
@@ -85,12 +115,13 @@ public class AccountEntityReposityDefaultImpl implements AccountEntityRepository
         return accountEntities;
     }
 
+    @Transactional
     @Override
     public void deleteAccount(Long id) {
-
+        entityManager.getTransaction().begin();
         Query query = entityManager.createQuery("delete from " + AccountEntity.class.getName() + " acc where acc.id = ?1");
         query.setParameter(1, id);
-        int number = query.executeUpdate();
-        System.out.println("deleted =" + number);
+        query.executeUpdate();
+        entityManager.getTransaction().commit();
     }
 }

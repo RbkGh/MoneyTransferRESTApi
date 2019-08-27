@@ -1,6 +1,5 @@
 package com.revolut.repository;
 
-import com.revolut.domain.AccountEntity;
 import com.revolut.domain.AccountTransactionEntity;
 import com.revolut.domain.TransactionStatus;
 

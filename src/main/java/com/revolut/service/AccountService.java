@@ -53,7 +53,6 @@ public class AccountService {
         accountTransactionEntity.setSendingAccountId(Long.valueOf(senderAccountId));
 
         if (constraintViolations.size() == 0) {
-            //execute here
             Long receiverAccountId = accountTransactionEntity.getReceivingAccountId();
             //check if both accounts exist in database.
             if (accountEntityRepository.doesAccountExistById(Long.valueOf(senderAccountId)) && accountEntityRepository.doesAccountExistById(receiverAccountId)) {
@@ -66,11 +65,12 @@ public class AccountService {
                         return new ErrorOperationWithReasonPayload(500, "Could not complete request");
                     }
                     //now save the transaction entity as successful once we reach here.
-                    createAccountTransactionInDatastore(accountTransactionEntity, TransactionStatus.SUCCESS, "");
+                    //createAccountTransactionInDatastore(accountTransactionEntity, TransactionStatus.SUCCESS, "");
                     return new SuccessfulOperationWithEmptyBodyPayload(201);
-
                 }
-                return new ErrorOperationWithReasonPayload(403, "Forbidden");//we dont want to expose financial information with "not enough balance"
+                String reasonForFailure = "Not Enough Balance to initiate transaction";
+                createAccountTransactionInDatastore(accountTransactionEntity, TransactionStatus.FAILED, reasonForFailure);
+                return new ErrorOperationWithReasonPayload(403, reasonForFailure);//we dont want to expose financial information with "not enough balance"
             }
             return new ErrorOperationWithReasonPayload(404, "Account with id = " + senderAccountId + " does not exist.");
         }
@@ -156,24 +156,22 @@ public class AccountService {
                 accountEntityRepository.getAccountById(accountTransactionEntity.getSendingAccountId());
 
         AccountEntity receiverAccount =
-                accountEntityRepository.getAccountById(accountTransactionEntity.getSendingAccountId());
+                accountEntityRepository.getAccountById(accountTransactionEntity.getReceivingAccountId());
 
         BigDecimal transactionAmount = accountTransactionEntity.getTransactionAmount();
 
 
-        try {
-            creditAccountInDatastore(receiverAccount, transactionAmount);
+        AccountEntity updatedSenderAccountBalance = debitAccountInDatastore(senderAccount, transactionAmount);
+        AccountEntity updatedRecieverAccountBalance = creditAccountInDatastore(receiverAccount, transactionAmount);
 
-            debitAccountInDatastore(senderAccount, transactionAmount);
+        accountEntityRepository
+                .updateAccountBalancesAndTransactionLog(updatedSenderAccountBalance
+                        , updatedRecieverAccountBalance
+                        , accountTransactionEntity);
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            createAccountTransactionInDatastore(accountTransactionEntity, TransactionStatus.FAILED, "Error");
-            throw new Exception("Failed Transaction");
-        }
     }
 
-    private void creditAccountInDatastore(AccountEntity accountEntity, BigDecimal amountToCredit) throws Exception {
+    private AccountEntity creditAccountInDatastore(AccountEntity accountEntity, BigDecimal amountToCredit) throws Exception {
 
         BigDecimal currentBalanceBeforeAddition = accountEntity.getAccountBalance();
 
@@ -181,10 +179,10 @@ public class AccountService {
 
         accountEntity.setAccountBalance(currentBalanceAfterAddition);
 
-        accountEntityRepository.updateUserAccountBalance(accountEntity, currentBalanceAfterAddition);
+        return accountEntity;
     }
 
-    private void debitAccountInDatastore(AccountEntity accountEntity, BigDecimal amountToDebit) throws Exception {
+    private AccountEntity debitAccountInDatastore(AccountEntity accountEntity, BigDecimal amountToDebit) throws Exception {
 
         BigDecimal currentBalanceBeforeDebit = accountEntity.getAccountBalance();
 
@@ -192,7 +190,7 @@ public class AccountService {
 
         accountEntity.setAccountBalance(currentBalanceAfterDebit);
 
-        accountEntityRepository.updateUserAccountBalance(accountEntity, currentBalanceAfterDebit);
+        return accountEntity;
     }
 
     private void createAccountTransactionInDatastore(AccountTransactionEntity accountTransactionEntity, TransactionStatus transactionStatus, String reason) throws Exception {
