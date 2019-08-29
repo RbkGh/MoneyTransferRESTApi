@@ -199,3 +199,9 @@ Response:
     HTTP 204 No Content
  
 ```
+> Like every other code ,improvements can be made,here are a list of some improvements to be made :
+
+### TO-DOs / Improvements
+
+- [ ] Presentation (HTTP) errors (status codes) should be separated from business code.<br>
+ Ideally business domain should have own set of errors which are later mapped to presentation layer errors.
